@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Crop Disease Classifier</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" href="https://twemoji.maxcdn.com/v/latest/svg/1f33e.svg">
+  <style>
+    body {
+      background: #e8f5e9;
+      font-family: Arial, sans-serif;
+      text-align: center;
+      padding: 20px;
+    }
+
+    h1 {
+      color: #2e7d32;
+    }
+
+    .box {
+      background: #ffffff;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0, 128, 0, 0.2);
+      padding: 20px;
+      max-width: 600px;
+      margin: auto;
+    }
+
+    .btn {
+      padding: 10px 20px;
+      margin: 10px;
+      background-color: #4caf50;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    .btn:hover {
+      background-color: #388e3c;
+    }
+
+    video {
+      max-width: 100%;
+      max-height: 240px;
+      border-radius: 10px;
+      margin-top: 10px;
+    }
+
+    #preview {
+      display: none;
+      max-width: 300px;
+      width: 100%;
+      height: auto;
+      border-radius: 10px;
+      margin: 10px auto;
+    }
+
+    #camera-section {
+      display: none;
+      margin: 20px auto;
+    }
+
+    .spinner {
+      display: none;
+    }
+
+    #result {
+      margin-top: 20px;
+      font-weight: bold;
+      font-size: 1.2em;
+    }
+
+    select, input[type="file"] {
+      margin: 10px;
+      padding: 8px;
+      border-radius: 5px;
+    }
+  </style>
+</head>
+<body>
+  <h1>🌱 Crop Disease Classifier</h1>
+  <div class="box">
+    <form id="upload-form">
+      <label for="crop">Select Crop:</label>
+      <select name="crop" id="crop" required>
+        <option value="potato">Potato</option>
+        <option value="tomato">Tomato</option>
+      </select><br>
+
+      <input type="file" name="file" accept="image/*" id="file-input" required><br>
+      <img id="preview" src="#" alt="Image Preview"><br>
+
+      <button class="btn" type="submit">🧪 Predict</button>
+    </form>
+
+    <button class="btn" onclick="startCamera()">📸 Open Camera</button>
+    <button class="btn" onclick="stopCamera()">❌ Close Camera</button>
+
+    <div id="camera-section">
+      <video id="video" autoplay></video><br>
+      <button class="btn" onclick="captureImage()">📷 Capture & Predict</button>
+    </div>
+
+    <div class="spinner" id="spinner">🔄 Predicting...</div>
+    <div id="result"></div>
+  </div>
+
+  <script>
+    const video = document.getElementById('video');
+    const preview = document.getElementById('preview');
+    const cameraSection = document.getElementById('camera-section');
+    const fileInput = document.getElementById('file-input');
+    const spinner = document.getElementById('spinner');
+    let stream;
+
+    // Start camera
+    async function startCamera() {
+      try {
+        stream = await navigator.mediaDevices.getUserMedia({ video: true });
+        video.srcObject = stream;
+        cameraSection.style.display = 'block';
+      } catch (err) {
+        alert('Camera not accessible');
+      }
+    }
+
+    // Stop camera
+    function stopCamera() {
+      if (stream) {
+        stream.getTracks().forEach(track => track.stop());
+        video.srcObject = null;
+      }
+      cameraSection.style.display = 'none';
+    }
+
+    // Capture from camera
+    async function captureImage() {
+      const canvas = document.createElement('canvas');
+      canvas.width = video.videoWidth;
+      canvas.height = video.videoHeight;
+      canvas.getContext('2d').drawImage(video, 0, 0);
+      canvas.toBlob(blob => {
+        const file = new File([blob], "capture.png", { type: "image/png" });
+
+        // Preview the captured image
+        preview.src = URL.createObjectURL(blob);
+        preview.style.display = 'block';
+
+        sendPrediction(file);
+      }, 'image/png');
+    }
+
+    // Handle file upload preview
+    fileInput.addEventListener('change', function () {
+      const file = this.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = function (e) {
+          preview.src = e.target.result;
+          preview.style.display = 'block';
+        };
+        reader.readAsDataURL(file);
+      } else {
+        preview.style.display = 'none';
+      }
+    });
+
+    // Submit upload form
+    document.getElementById('upload-form').addEventListener('submit', function (e) {
+      e.preventDefault();
+      const file = fileInput.files[0];
+      if (file) sendPrediction(file);
+    });
+
+    // Prediction handler
+    function sendPrediction(file) {
+      const crop = document.getElementById('crop').value;
+      const formData = new FormData();
+      formData.append('file', file);
+      formData.append('crop', crop);
+
+      spinner.style.display = 'block';
+      document.getElementById('result').innerText = "";
+
+      fetch('/predict', {
+        method: 'POST',
+        body: formData
+      })
+      .then(res => res.json())
+      .then(data => {
+        spinner.style.display = 'none';
+        if (data.error) {
+          document.getElementById('result').innerText = "❌ Error: " + data.error;
+        } else {
+          document.getElementById('result').innerText =
+            `✅ Class: ${data.class}\nConfidence: ${data.confidence}%`;
+        }
+      })
+      .catch(err => {
+        spinner.style.display = 'none';
+        document.getElementById('result').innerText = "❌ Failed to predict: " + err;
+      });
+    }
+  </script>
+</body>
+</html>
