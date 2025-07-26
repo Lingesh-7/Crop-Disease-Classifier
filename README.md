@@ -70,10 +70,3 @@ http://127.0.0.1:5000/
 
 * Supports **Render/Heroku Deployment** with `Procfile` and `runtime.txt`.
 * Use relative paths for models to ensure deployment compatibility.
-
-```
-
-✅ You can copy and paste this into your `README.md` file, and it will render perfectly on GitHub.  
-
-Do you also want me to include a **📂 Project Structure** section to show folders and files, or keep it exactly like this?
-```
