@@ -1,6 +1,3 @@
-Here’s the exact **GitHub README.md** formatted version of the content you provided:
-
-````markdown
 # 🥔🍅 Crop Disease Classifier  
 
 A web application for detecting **Potato and Tomato leaf diseases** using a deep learning model. The app allows users to upload or capture an image of a leaf and classifies it into different disease categories or as healthy.
