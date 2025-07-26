@@ -13,8 +13,8 @@ CORS(app)
 # ✅ Model Paths (Relative for Render)
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 MODEL_PATHS = {
-    "potato": os.path.join(BASE_DIR, "saved_models", "potato.keras"),
-    "tomato": os.path.join(BASE_DIR, "saved_models", "tomato.h5")
+    "potato": os.path.join(BASE_DIR, "saved_models", "potato_fixed.keras"),
+    "tomato": os.path.join(BASE_DIR, "saved_models", "tomato_fixed.keras")
 }
 
 # ✅ Class Names
