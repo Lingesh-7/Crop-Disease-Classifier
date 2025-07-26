@@ -18,14 +18,15 @@ A web application for detecting **Potato and Tomato leaf diseases** using a deep
 - **Potato Model:** `saved_models/potato.keras`  
 - **Tomato Model:** `saved_models/tomato.h5`  
 
-### Tomato Disease Classes:
-- `Tomato__Tomato_mosaic_virus`  
-- `Tomato__Tomato_YellowLeaf__Curl_Virus`  
-- `Tomato_healthy`  
-
 ### Potato Disease Classes:
-- *(Add the potato classes here if available)*
+- `Early Blight`  
+- `Late Blight`  
+- `Healthy`  
 
+### Tomato Disease Classes:
+- `Tomato YellowLeaf Curl Virus`  
+- `Tomato Mosaic Virus`  
+- `Tomato Healthy`
 ---
 
 ## ⚙️ Installation  
