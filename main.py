@@ -6,38 +6,34 @@ import tensorflow as tf
 from io import BytesIO
 import os
 
-# Initialize Flask App
-app = Flask(__name__, template_folder='templates', static_folder='static')
+# ✅ Initialize Flask App
+app = Flask(__name__)
 CORS(app)
 
-
+# ✅ Model Paths (Relative for Render)
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 MODEL_PATHS = {
     "potato": os.path.join(BASE_DIR, "saved_models", "potato.keras"),
     "tomato": os.path.join(BASE_DIR, "saved_models", "tomato.h5")
 }
 
-
-try:
-    MODELS = {
-        "potato": tf.keras.models.load_model(MODEL_PATHS["potato"]),
-        "tomato": tf.keras.models.load_model(MODEL_PATHS["tomato"])
-    }
-except Exception as e:
-    print("❌ Error loading models:", e)
-
-
+# ✅ Class Names
 CLASS_NAMES = {
     "potato": ["Early Blight", "Late Blight", "Healthy"],
-    "tomato": [ "Tomato YellowLeaf Curl Virus"," Tomat mosaic virus", "Tomato healthy"]
+    "tomato": ["Tomato YellowLeaf Curl Virus", "Tomato Mosaic Virus", "Tomato Healthy"]
 }
 
-
+# ✅ Helper: Read & preprocess image
 def read_image(data):
     image = Image.open(BytesIO(data)).convert("RGB")
     image = image.resize((256, 256))
     return np.expand_dims(np.array(image), axis=0)
 
+# ✅ Lazy-load model to save RAM on Render
+def get_model(crop_type):
+    return tf.keras.models.load_model(MODEL_PATHS[crop_type])
+
+# ✅ Routes
 @app.route('/')
 def index():
     return render_template('index.html')
@@ -48,11 +44,14 @@ def predict():
         crop_type = request.form['crop']
         file = request.files['file']
 
-        if crop_type not in MODELS:
+        if crop_type not in MODEL_PATHS:
             return jsonify({'error': 'Invalid crop type'}), 400
 
+        # ✅ Load model only when needed
+        model = get_model(crop_type)
         image_array = read_image(file.read())
-        prediction = MODELS[crop_type].predict(image_array)
+        prediction = model.predict(image_array)
+
         predicted_class = CLASS_NAMES[crop_type][np.argmax(prediction[0])]
         confidence = float(np.max(prediction[0]))
 
@@ -64,7 +63,7 @@ def predict():
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
+# ✅ Render Production Entry Point
 if __name__ == '__main__':
-    # ✅ Render requires 0.0.0.0 and PORT from environment variable
     port = int(os.environ.get("PORT", 8000))
     app.run(host="0.0.0.0", port=port, debug=False)
