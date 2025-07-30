@@ -1,72 +1,110 @@
-# 🥔🍅 Crop Disease Classifier  
+# 🍅🥔 Potato and Tomato Leaf Disease Classification
 
-A web application for detecting **Potato and Tomato leaf diseases** using a deep learning model. The app allows users to upload or capture an image of a leaf and classifies it into different disease categories or as healthy.
-
----
-
-## 🚀 Features  
-- ✅ Classifies **Potato and Tomato leaf diseases**  
-- ✅ Real-time camera capture or image upload  
-- ✅ Responsive web interface with agricultural theme  
-- ✅ Displays classification results with confidence score  
-- ✅ Loading spinner for better UX  
-- ✅ Future support for multilingual tips for farmers  
+A Flask-based web application that classifies **potato and tomato leaf diseases** using deep learning models. Users can **upload images or capture live photos** to get real-time predictions for plant health.
 
 ---
 
-## 🧠 Models Used  
-- **Potato Model:** `saved_models/potato.keras`  
-- **Tomato Model:** `saved_models/tomato.h5`  
+## 🚀 Features
 
-### Potato Disease Classes:
-- `Early Blight`  
-- `Late Blight`  
-- `Healthy`  
+* 🌱 **Crop Selection:** Choose between potato and tomato for disease detection.
+* 📷 **Image Upload / Live Camera:** Upload leaf images or capture photos in real-time.
+* 🤖 **Deep Learning Models:**
 
-### Tomato Disease Classes:
-- `Tomato YellowLeaf Curl Virus`  
-- `Tomato Mosaic Virus`  
-- `Tomato Healthy`
+  * **Potato CNN Model:**
+
+    * Dataset: 2,152 images
+    * Classes: `Potato___Early_blight`, `Potato___Late_blight`, `Potato___healthy`
+    * Accuracy: **96.09%**
+  * **Tomato CNN Model:**
+
+    * Dataset: 5,172 images
+    * Classes: `Tomato__Tomato_YellowLeaf__Curl_Virus`, `Tomato__Tomato_mosaic_virus`, `Tomato_healthy`
+    * Accuracy: **99.81%**
+* 🌐 **Web Interface:** User-friendly Flask app with a responsive agricultural-themed UI.
+* ⚡ **Real-Time Predictions:** Fast inference for quick decision-making.
+
 ---
 
-## ⚙️ Installation  
+## 🛠️ Tech Stack
 
-### 1️⃣ Clone the Repository:
+* **Backend:** Flask, Python
+* **Deep Learning:** TensorFlow, Keras, CNNs
+* **Frontend:** HTML, CSS, Bootstrap
+* **Others:** OpenCV, NumPy, Pandas
+
+---
+
+## 📂 Project Structure
+
+```
+Crop-Disease-Classifier/
+│
+├── models/
+│   ├── potato_model.keras
+│   ├── tomato_model.h5
+│
+├── static/
+│   ├── css/
+│   └── images/
+│
+├── templates/
+│   ├── index.html
+│
+├── app.py
+├── util.py
+├── requirements.txt
+└── README.md
+```
+
+---
+
+## ▶️ Installation & Usage
+
+### 1️⃣ Clone the repository
+
 ```bash
-git clone https://github.com/Lingesh-7/Crop-Disease-Classifier.git
+git clone https://github.com/YourUsername/Crop-Disease-Classifier.git
 cd Crop-Disease-Classifier
-````
+```
 
-### 2️⃣ Install Dependencies:
+### 2️⃣ Install dependencies
 
 ```bash
 pip install -r requirements.txt
 ```
 
-### 3️⃣ Run the Application:
+### 3️⃣ Run the application
 
 ```bash
-python main.py
+python app.py
 ```
 
-### 4️⃣ Open in Browser:
+### 4️⃣ Open in browser
 
-```cpp
+```
 http://127.0.0.1:5000/
 ```
 
 ---
 
-## 🌱 Usage
+## 📊 Model Training
 
-* Select **Potato** or **Tomato** as crop type.
-* Upload an image or use live camera capture.
-* Click **Classify**.
-* Get instant disease prediction with confidence score.
+* Both CNN models were trained with **data augmentation** for better generalization.
+* Optimizers: Adam
+* Loss Function: Categorical Cross-Entropy
+* Early Stopping used to prevent overfitting.
 
 ---
 
-## 📦 Deployment
 
-* Supports **Render/Heroku Deployment** with `Procfile` and `runtime.txt`.
-* Use relative paths for models to ensure deployment compatibility.
+## 🔮 Future Improvements
+
+* ✅ Add multilingual support for farmers.
+* ✅ Deploy on Render/Heroku with a public URL.
+* ✅ Add audio/text-based crop health tips.
+
+---
+
+## 📜 License
+
+This project is open-source under the MIT License.
