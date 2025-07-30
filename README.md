@@ -103,8 +103,4 @@ http://127.0.0.1:5000/
 * ✅ Deploy on Render/Heroku with a public URL.
 * ✅ Add audio/text-based crop health tips.
 
----
 
-## 📜 License
-
-This project is open-source under the MIT License.
